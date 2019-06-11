@@ -1,9 +1,4 @@
-####  LInux LVM (logical volume management) ####
-
-
-Important:- This is article is only helpful for you when you know about lvm because i am giving only steps of creating and in very 
-short steps .
-
+  LInux LVM (logical volume management) 
 
 A) create partition 
 
@@ -100,48 +95,8 @@ C)  mount partition
 [root@desktop3 Desktop]# mount  /dev/mystorage/mylvm1 /media/myst
 
 
-Lvm Extend:-
 
 
 
-
-[root@desktop3 Desktop]# lvextend   --size  +200M  /dev/mystorage/mylvm1 
- [root@desktop3 Desktop]# resize2fs   /dev/mystorage/mylvm1
-
-Note: resize2fs  command will work till filesystem (ext2,3,4)
-
-Note:  IF  you have formted  your LVM with XFS  then 
-
-[root@desktop3 Desktop]# lvextend   --size  +200M  /dev/mystorage/mylvm1 
- [root@desktop3 Desktop]# xfs_growfs    /dev/mystorage/mylvm1
-
-LVM  reduce (ext2,3,4) :-
-
-
-
-To reduce size of LVM follow below given steps:
-
-1.  unmount  the LVm
-
- [root@desktop3 Desktop]# umount  /media/myst/
-
-2.  scan LVM
-
-[root@desktop3 Desktop]# e2fsck   -f   /dev/mystorage/mylvm1
-
-3. resize LVM
-
-[root@desktop3 Desktop]# resize2fs   /dev/mystorage/mylvm1   300M
-
-4.  reduce LVM
-
-[root@desktop3 Desktop]# lvreduce  --size  300M  /dev/mystorage/mylvm1
-
-5.  mount LVM 
-
- [root@desktop3 Desktop]# mount  /dev/mystorage/mylvm1  /media/myst/
-
-
-Important:-  In xfs filesystem there is no concept of lvm reduce
 
 
