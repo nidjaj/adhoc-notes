@@ -1,0 +1,44 @@
+Device Mapper  is linux kernel framework
+
+which is generally used for mapping  physical block devices to higher level virtual block devices.
+
+Examples:  
+
+1.  LVM2
+2.  Software RAID
+3.  dm_crypt
+
+In device Mapper architecture that are needed to discuss
+
+A)  Mapped Device
+B) Mapping  table
+C)   Target Device
+
+Mapped Device
+Mapped device is a logical device provided by device-mapper driver. It provides an interface to operate on. The logical volumes in
+
+LVM2 and pseudo disks in dm-multipath are good examples of mapped devices .
+
+Mapping Table
+Mapping table represents a mapping from a mapped device to target devices. One table can be seen as an group of variables including
+mapped device’s starting address, length and target device’s physical device, starting address, length.
+The unit used here is a sector (512 bytes). The command “dmsetup create” will create such a table with parameters provided.
+Target Device
+Target device is a modularized plugin. The device-mapper filters and redirects I/O requests with it. some good examples for target
+devices
+linear for LVM2
+mirror for RAID
+stripped for LVM2
+snapshot for LVM2
+
+multipath for dm-multipath
+
+How application deals with device mapper
+Device-mapper works by processing data passed in from a virtual block device, that it itself provides, and then passing it on to another block device.
+Applications (like dm_multipath and LVM2) that want to create new mapped devices talk to the Device-mapper via the libdevmapper.so shared library, which in turn issues ioctls to the /dev/mapper/control device node.
+Info About dm-multipath
+Linux Device Mapper multipath tool is linux native multipath tool.  Which allows you to configure multiple  I/O paths  between server nodes and storage arrays into a single device.
+Multipath  Device ID's:
+
+WWID :-  world wide Identifier is the name which is having by multipath devices which will qnique and unchanged these names are
+very difficult so you kept it in user_friendly manner but that will be unique 
