@@ -1,0 +1,147 @@
+####  LInux LVM (logical volume management) ####
+
+
+Important:- This is article is only helpful for you when you know about lvm because i am giving only steps of creating and in very 
+short steps .
+
+
+A) create partition 
+
+Note: you better know how to create partition so here we have already created two partitions named /dev/sda1 and /dev/sdb1
+
+Step 1:- physical volume create 
+
+A)   [root@desktop3 Desktop]# pvcreate   /dev/sda1
+    [root@desktop3 Desktop]#  pvcreate   /dev/sdb1
+
+OR
+
+   [root@desktop3 Desktop]# pvcreate  /dev/sda1  /dev/sdb1
+
+
+B) physical volume display 
+
+  [root@desktop3 Desktop]#  pvdisplay   /dev/sda1
+  [root@desktop3 Desktop]#  pvdisplay   /dev/sda1 /dev/sdb1
+  
+OR
+  
+  [root@desktop3 Desktop]# pvs
+  PV         VG   Fmt  Attr PSize   PFree  
+  /dev/sda1  vol0 lvm2 a--   58.56g   1.75g
+  /dev/sdb1       lvm2 a--  400.00m 400.00m
+
+
+
+Note: There are some advanced commands for physical volume management so you doesn't need to follow the steps but if you know 
+about these commands then you can use.
+
+OR to scan physical 
+========
+
+[root@desktop3 Desktop]# pvscan 
+  PV /dev/sda1  VG vol0            lvm2 [58.56 GiB / 1.75 GiB free]
+  PV /dev/sdb1                      lvm2 [400.00 MiB]
+
+check pv metadata 
+
+[root@desktop3 Desktop]# pvck  /dev/sda1
+  Found label on /dev/sda1, sector 1, type=LVM2 001
+  Found text metadata area: offset=4096, size=1044480
+
+Enable / disable allocation of physical extent 
+!) for disable
+
+[root@desktop3 Desktop]# pvchange -x n  /dev/sda1
+  Allocatability not supported by orphan lvm2 format PV /dev/sda6
+  0 physical volumes changed / 1 physical volume not changed
+
+!!) For enable 
+
+[root@desktop3 Desktop]# pvchange -x y  /dev/sda6
+  Allocatability not supported by orphan lvm2 format PV /dev/sda6
+  0 physical volumes changed / 1 physical volume not changed
+change size of physical volume 
+
+[root@desktop3 Desktop]# pvresize --setphysicalvolumesize 1G /dev/sda1
+  WARNING: /dev/sda1: Overriding real size. You could lose data.
+  Physical volume "/dev/sda1" changed
+  1 physical volume(s) resized / 0 physical volume(s) not resized
+
+
+[root@desktop3 Desktop]# pvdisplay  /dev/sda1
+  --- Physical volume ---
+  PV Name               /dev/sda1
+  VG Name               vg1
+  PV Size               1023.00 MiB / not usable 3.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              255
+  Free PE               255
+  Allocated PE          0
+  PV UUID               gQFfaj-PFCR-Vagd-mxj1-31Yb-pdkF-hDJWuV
+
+Step 2:-  volume group create  
+[root@desktop3 Desktop]# vgcreate  mystorage  /dev/sda1  /dev/sdb1 
+ [root@desktop3 Desktop]#   vgdisplay  mystorage
+
+Step 3:-   lvm create  
+
+[root@desktop3 Desktop]# lvcreate    --name  mylvm1  --size  800M  mystorage
+ [root@desktop3 Desktop]# lvdisplay   /dev/mystorage/mylvm1 
+
+
+B)  format partition 
+
+[root@desktop3 Desktop]# mkfs.ext4   /dev/mystorage/mylvm1
+
+C)  mount partition 
+[root@desktop3 Desktop]# mkdir  /media/myst
+[root@desktop3 Desktop]# mount  /dev/mystorage/mylvm1 /media/myst
+
+
+Lvm Extend:-
+
+
+
+
+[root@desktop3 Desktop]# lvextend   --size  +200M  /dev/mystorage/mylvm1 
+ [root@desktop3 Desktop]# resize2fs   /dev/mystorage/mylvm1
+
+Note: resize2fs  command will work till filesystem (ext2,3,4)
+
+Note:  IF  you have formted  your LVM with XFS  then 
+
+[root@desktop3 Desktop]# lvextend   --size  +200M  /dev/mystorage/mylvm1 
+ [root@desktop3 Desktop]# xfs_growfs    /dev/mystorage/mylvm1
+
+LVM  reduce (ext2,3,4) :-
+
+
+
+To reduce size of LVM follow below given steps:
+
+1.  unmount  the LVm
+
+ [root@desktop3 Desktop]# umount  /media/myst/
+
+2.  scan LVM
+
+[root@desktop3 Desktop]# e2fsck   -f   /dev/mystorage/mylvm1
+
+3. resize LVM
+
+[root@desktop3 Desktop]# resize2fs   /dev/mystorage/mylvm1   300M
+
+4.  reduce LVM
+
+[root@desktop3 Desktop]# lvreduce  --size  300M  /dev/mystorage/mylvm1
+
+5.  mount LVM 
+
+ [root@desktop3 Desktop]# mount  /dev/mystorage/mylvm1  /media/myst/
+
+
+Important:-  In xfs filesystem there is no concept of lvm reduce
+
+
