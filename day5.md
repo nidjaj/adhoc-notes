@@ -2,8 +2,8 @@
 
 There are 3 popular kernals
 
-1.NT
-2.Linux
+*(.NT
+* Linux
 3.Darwin
 Google Search Queries
 Search for diff in unix and linux
