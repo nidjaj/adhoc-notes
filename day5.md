@@ -1,4 +1,4 @@
-Unix is a type of linux. C language is used to developed most of the part of a kernel.
+# Unix is a type of linux. C language is used to developed most of the part of a kernel.
 
 There are 3 popular kernals
 
